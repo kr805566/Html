@@ -1,0 +1,81 @@
+.main-menu{
+	position: fixed;
+	top: 0px;
+  	left: 0px;
+  	background-color:  #000;
+  	color: #fff;		
+	height: 50px;
+	width:2000px;
+	
+
+}
+
+
+.move-menu{
+	margin: 0px;
+	padding: 0px;
+
+	list-style: none;
+
+	font-size: 26px;
+	list-style-position: inside;
+
+	}
+
+
+
+.move-menu>li {
+
+        float: left; /* 只有第一層是靠左對齊*/
+       	height: 50px;
+	width:100px;
+	}
+
+.move-menu li ul li {
+
+        float: left; /* 只有第一層是靠左對齊*/
+       	height: 50px;
+		width:150px;
+		text-align:left;
+	}	
+
+
+.move-menu a{
+	background-color:  #000;
+	color: #fff;
+	display: block;
+	text-decoration:none;
+	margin: 0px;
+	padding: 0px;
+	height: 50px;
+	
+	text-align:center;
+	vertical-align: middle;
+	
+	}
+
+.move-menu li ul li a{
+		text-indent: 50px;
+
+		text-align:left;
+	}	
+
+
+
+.move-menu ul { /*隱藏次選單*/
+        display: none;
+    }
+
+.move-menu li:hover > ul { /* 滑鼠滑入展開次選單*/
+        display: block;
+
+
+    }
+
+ .move-menu li:hover > a { /* 滑鼠移入次選單上層按鈕保持變色*/
+     background-color:  #fff;
+	color: #000;
+	height: 50px;
+
+    }
+

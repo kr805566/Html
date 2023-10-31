@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <style>
+  	button{
+  		
+		width:120px;
+		height:40px;
+		font-size:20px;
+  	}
+
+  </style>
+ </head>
+ <body>
+ <canvas id ="Chess"  width="650" height="650"> </canvas>
+ <font id= "test"></font>
+</body>
+<div style="position:absolute;top:50px;left:650px">
+<p id="textWin"></p>
+</div>
+<script>
+	var chessX=15;
+	var chessY=15;
+	var chessSize=40;
+	var player = true;
+	var online = false;
+	var cheesspace= new Array(chessX);
+	var gameover = false;
+
+	
+	var c = document.getElementById("Chess");
+	var ctx = c.getContext("2d");
+
+
+	function CreateChessBoard(){
+
+		gameover = false;
+		ctx.clearRect(0,0,650,650);
+		for (var i = 0 ; i < chessX ; i++ ){   
+			cheesspace[i]=new Array(chessY);
+			for (var j = 0 ; j < chessY ; j++ ){
+					cheesspace[i][j]=2;
+			}
+		}
+
+		ctx.beginPath();
+
+		
+		
+		for (var i = 1; i <chessY+1; i++ ){
+			ctx.moveTo(chessSize, i * chessSize);
+			ctx.lineTo(chessX*chessSize, i * chessSize)
+		}
+
+			
+		for (var i = 1; i <chessX+1; i++ ){
+			ctx.moveTo( i * chessSize,chessSize);
+			ctx.lineTo( i * chessSize,chessY*chessSize)
+		}
+		ctx.stroke();
+		c.addEventListener('mousedown', mouseDownHandler, false);
+		document.getElementById("textWin").innerHTML='';
+	
+	}
+
+	function mouseDownHandler(event){
+		
+		var x = event.pageX - c.offsetLeft
+		var y = event.pageY - c.offsetTop;
+		
+		for(var i = 0;i<chessX+1;i++){
+			for(var j = 0;j<chessY+1;j++){	  
+				
+				var minX = (chessSize*0.75)+(i*chessSize);
+				var maxX = (chessSize*0.75)+(i*chessSize)+chessSize/2;
+				var minY = (chessSize*0.75)+(j*chessSize);
+				var maxY = (chessSize*0.75)+(j*chessSize)+chessSize/2;
+				
+				if( (x>minX && x<maxX) && (y>minY && y<maxY)){
+					
+					if(cheesspace[i][j] != 2 || gameover)
+						return;
+					
+				
+					ctx.beginPath();
+						// if(player){
+							
+							cheesspace[i][j] = 0;
+							ctx.arc(chessSize+(i*chessSize),chessSize+(j*chessSize),chessSize/3,0,2*Math.PI);
+							ctx.fillStyle = 'white';
+							ctx.fill();
+							
+							ctx.stroke();
+							checkwin(j,i,0);
+							
+						// }
+						// else{
+						// 	cheesspace[i][j] = 1;
+						// 	ctx.arc(chessSize+(i*chessSize),chessSize+(j*chessSize),chessSize/3,0,2*Math.PI);
+						// 	ctx.fillStyle = 'black';
+						// 	ctx.fill();	
+						// 	ctx.stroke();
+						// 	checkwin(j,i,1);
+						// }
+						if (!gameover){autorun();}
+						
+							
+				}
+
+			}	 	 
+		}
+	}
+
+	
+	 
+
+	function autorun(){
+		
+		var ran = randoms();
+		ctx.beginPath();
+		cheesspace[ran.x][ran.y] = 1;
+		ctx.arc(chessSize+(ran.x*chessSize),chessSize+(ran.y*chessSize),chessSize/3,0,2*Math.PI);
+		ctx.fillStyle = 'black';
+		ctx.fill();	
+		
+		checkwin(ran.y,ran.x,1);
+		ctx.stroke();
+		
+
+	}
+	
+
+ 	function randoms(){
+
+		var ranok = true;
+		var maxNumX = (chessX-1);  
+		var maxNumY = (chessY-1); 	
+		var ran = {x:0,y:0};
+
+		getMaxEvaluateIndex();
+		ran.x =  xxx;
+		ran.y = yyy;
+		if(cheesspace[ran.x][ran.y] == 2){
+				ranok = false;	
+		}
+
+		while(ranok){
+			ran.x =  Math.floor(Math.random() * (maxNumX + 1));
+			ran.y =  Math.floor(Math.random() * (maxNumX + 1));
+			if(cheesspace[ran.x][ran.y] == 2){
+				ranok = false;	
+			}
+		}
+		
+		return ran;
+	}
+
+
+
+function checkwin(x,y,key){
+
+		var count1 = 0;
+		var count2 = 0;
+		var count3 = 0;
+		var count4 = 0;
+		
+
+		for (var i=x;i>=0;i--) { 
+			if (cheesspace[y][i] != key) { 
+				break; 
+			} 
+			count1++; 
+		}
+
+		for (var i=x+1;i<=(chessX-1);i++) { 
+			if (cheesspace[y][i] != key) { 
+				break; 
+			} 
+			count1++; 
+		}
+		
+
+		for (var i=y;i>=0;i--) { 
+				
+			if (cheesspace[i][x] != key) { 
+				break; 
+			} 
+			count2++; 
+		}
+
+		for (var i=y+1;i<=(chessY-1);i++) { 
+			if (cheesspace[i][x] != key) { 
+				break; 
+			} 
+			count2++; 
+		}
+		
+
+		for (var i = x, j = y; i >= 0, j >= 0; i--, j--) { 
+
+			if ( i<0 || cheesspace[j][i] != key) { 
+				break; 
+			} 
+			count3++; 
+			
+		} 	
+
+		for (var i = x+1, j = y+1; i <= (chessX-1), j <= (chessY-1); i++, j++) { 
+			if (cheesspace[j][i] != key) { 
+				break; 
+			} 
+			count3++; 
+		}
+		
+
+		for (var i = x, j = y; i >= 0, j <= (chessY-1); i--, j++) { 
+			
+			if ( i<0 ||cheesspace[j][i] != key) { 
+				break; 
+			} 
+			count4++;
+		} 
+		for (var i = x + 1, j = y - 1; i <= (chessX-1), j >= 0; i++, j--) { 
+			if (cheesspace[j][i] != key) { 
+				break; 
+			}  
+			count4++; 
+		} 
+		
+		if(count1 > 4 || count2 > 4 || count3 > 4 || count4 > 4){
+
+			if(key==0){
+				//alert("白棋贏了");	
+				document.getElementById("textWin").innerHTML='白棋贏了';
+
+			}
+			else{
+				 //alert("黑棋贏了");
+				 document.getElementById("textWin").innerHTML='黑棋贏了';
+			}
+			gameover = true;
+		}
+		
+
+		
+
+	}
+	
+
+function CreateChessBoardB(){
+	CreateChessBoard();
+	autorun();
+}
+
+	var xxx;
+	var yyy;
+	//const defValues=[0,1,9,41,169,681,2729,10921,43689];  
+	//const atkValues=[0,2,10,42,170,682,2730,10922,43690];
+
+	const defValues=[0,1,21,341,5461,87381,1398101,22369621,22369621];  
+	const atkValues=[0,5,85,1365,21845,349525,5592405,89478485,89478485];
+
+	function getMaxEvaluateIndex(){
+	var evaluate=new Array(chessX);
+	var evaluatemax=0;
+		xxx=7;
+		yyy=7;
+		for(var i=0;i<chessX;i++){
+			evaluate[i] = new Array(chessY);
+		}
+	
+		for(var y=0; y<15; y++){
+			for(var x=0; x<15; x++){
+				evaluate[x][y]=evaluatePoint(x,y);
+				if (evaluatemax<evaluate[x][y]){
+					evaluatemax=evaluate[x][y];
+					xxx=x;
+					yyy=y;
+				}
+			}
+		}
+}
+
+
+function evaluatePoint(x,y){
+	
+	if(cheesspace[x][y] < 2){
+		
+		return -1;
+	}
+
+	var evaluateValue=0;
+
+	evaluateValue+=evaluateLine(x,y,1,0);
+
+	evaluateValue+=evaluateLine(x,y,0,-1);
+
+	evaluateValue+=evaluateLine(x,y,-1,-1);
+
+	evaluateValue+=evaluateLine(x,y,1,-1);
+
+
+
+
+	
+	return evaluateValue;
+}
+
+
+function valid(x,y){
+	return(x>=0 && y>=0 && x<15 && y<15);
+}
+
+
+
+
+
+function evaluateLine(x,y,dx,dy){
+	var atkValuePosIndex=0;
+	var atkValueNegIndex=0;
+	var defValuePosIndex=0;
+	var defValueNegIndex=0;
+	var atkValueAll=0;
+	var defValueAll=0;
+	
+	atkValuePosIndex=evaluateVector(x,y,dx,dy,1);
+	defValuePosIndex=evaluateVector(x,y,dx,dy,0);
+	
+	atkValueNegIndex=evaluateVector(x,y,dx*-1,dy*-1,1);
+	defValueNegIndex=evaluateVector(x,y,dx*-1,dy*-1,0);
+	
+	if(atkValuePosIndex%2==1 && atkValueNegIndex%2==1){
+		atkValueAll=0;
+	
+	}else{
+		atkValueAll=atkValues[atkValuePosIndex+atkValueNegIndex];
+	}
+	
+	if(defValuePosIndex%2==1 && defValueNegIndex%2==1){
+		defValueAll=0;
+	
+	}else{
+		defValueAll=defValues[defValuePosIndex+defValueNegIndex];
+	}
+	
+	
+	if(atkValueAll>defValueAll){
+		return atkValueAll;
+	}else{
+		return defValueAll;
+	}
+}
+
+
+function evaluateVector(x,y,dx,dy,evaluateType){
+	
+	var valueIndex=0;
+	for(var i=0;i<4;i++){
+		x+=dx;
+		y+=dy;
+		if(!valid(x,y)){
+			return 0;
+		}
+		if(cheesspace[x][y] == evaluateType){
+			valueIndex+=1;
+		}else{
+			if(cheesspace[x][y]==(1-evaluateType) && valueIndex>1){
+				valueIndex-=1;
+			}
+			break;
+		}
+	}
+
+	return valueIndex;
+	
+}
+
+CreateChessBoard();
+
+</script>
+
+<div style="position:absolute;top:100px;left:650px">
+<button type="button" onclick="CreateChessBoard()">先手</button>
+</div>
+<div style="position:absolute;top:150px;left:650px">
+<button type="button" onclick="CreateChessBoardB()">後手</button>
+</div>
+
+</html>
